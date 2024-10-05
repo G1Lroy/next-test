@@ -1,17 +1,10 @@
 'use client'
 
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Navbar() {
-  const router = useRouter();
-  const { isLoggedIn, logout } = useAuth();
 
-  const handleLogout = () => {
-    logout()
-    router.replace('/');
-  };
-
+  const { isLoggedIn, logout, isLoading } = useAuth();
 
   return (
 
@@ -20,8 +13,12 @@ export default function Navbar() {
         <a className="navbar-brand" href="#">NextApp</a>
         <div className="d-flex">
           {isLoggedIn &&
-            <button className="btn btn-outline-danger" onClick={handleLogout}>
-              Logout
+            <button disabled={isLoading} className="btn btn-outline-danger" onClick={logout}>
+              {isLoading ? (
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              ) : (
+                "Logout"
+              )}
             </button>
           }
         </div>

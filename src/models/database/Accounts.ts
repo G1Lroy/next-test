@@ -1,6 +1,6 @@
 import Entity from "./Entity";
 
-export type AccountType = 'FACEBOOK' | 'TIKTOK';
+export type AccountType = 'FACEBOOK' | 'TIKTOK' | 'TELEGRAM';
 
 export type AccountEntity = {
     amount: number,
@@ -10,6 +10,6 @@ export type AccountEntity = {
     type: AccountType
 }
 
-class Accounts extends Entity<AccountEntity> {}
+class Accounts extends Entity<AccountEntity> { }
 
 export default Accounts;

@@ -62,10 +62,9 @@ class Database {
             amount: 150,
             tfAccountId: '12345',
             userId: 3,
-            type: 'FACEBOOK'
+            type: 'TELEGRAM'
         },
     ]);
-
     public static authenticate(username: string, password: string): boolean {
         return this.users.authenticate(username, password);
     }

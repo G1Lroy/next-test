@@ -30,14 +30,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError("");
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1300));
+
       const isAuthenticated = Database.authenticate(username, password);
 
       if (!isAuthenticated) {
         throw new Error("Неправильный логин или пароль");
       }
       setIsLoggedIn(true)
-      Cookies.set('userToken', "111");
+      Cookies.set('userToken', username);
       return isAuthenticated
     } catch (err: unknown) {
       setError(`Ошибка входа, попробуйте снова. ${String(err)}`);
@@ -46,21 +47,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    setLoading(true)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     Cookies.remove('userToken');
     setIsLoggedIn(false);
+    router.replace('/')
+    setLoading(false)
   };
 
   useEffect(() => {
-    console.log(error);
-
     // Redirect if reload page or manual input adress
     const token = Cookies.get('userToken')
-    if (token && !error) {
+    if (token) {
       setIsLoggedIn(true)
       router.replace('/payments')
+    } else {
+      setIsLoggedIn(false)
+      router.replace('/')
     }
-  }, [router, error])
+  }, [router])
 
 
 

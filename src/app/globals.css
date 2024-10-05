@@ -3,3 +3,12 @@
   margin: 0;
   text-decoration: none;
 }
+
+.table_header>th>* {
+  cursor: pointer;
+}
+
+.table th,
+.table td {
+  text-align: center;
+}

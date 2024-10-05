@@ -12,29 +12,34 @@ abstract class Entity<T> {
 
     protected data: BaseEntity<T>[];
 
-    public add(row: ModifyBaseEntity<T>) { 
-        const lastId = this.data[this.data.length - 1].id;
+    public add(row: ModifyBaseEntity<T>, userId: number) {
+        // const lastId = this.data[this.data.length - 1]?.id;
 
         this.data.push({
-            id: lastId + 1,
+            id: userId,
             createDate: new Date(),
             ...row
         } as BaseEntity<T>)
+        console.log(this.data)
     }
 
-    public remove(id: number) { 
-        const rowToRemove = this.data.find( row => row.id === id);
+    public remove(date: string) {
 
-        if(rowToRemove) {
-            this.data = this.data.filter( row => row.id !== id);
+        const rowToRemove = this.data.find(row => row.createDate.toLocaleString() === date);
+
+        if (rowToRemove) {
+            this.data = this.data.filter(row => row.createDate.toLocaleString() !== date);
         }
 
-        return rowToRemove;
+        console.log(this.data);
     }
 
     public getAll() { return this.data }
 
-    public getById(id: number) { return this.data.find( row => row.id === id) }
+    public getById(id: number) { return this.data.find(row => row.id === id) }
+
+
+
 }
 
 export default Entity;
