@@ -61,7 +61,8 @@ function PaymentModal({ handleCreate }: PaymentModalProps) {
           <Button variant="secondary" onClick={handleClose}>
             Закрыть
           </Button>
-          <Button variant="primary" onClick={() => {
+          <Button disabled={!selectedUserId} variant="primary" onClick={() => {
+
             handleCreate({ amount, selectedUserId })
             handleClose()
           }
