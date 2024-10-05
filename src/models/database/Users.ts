@@ -6,8 +6,12 @@ export type UserEntity = {
 }
 
 class Users extends Entity<UserEntity> {
-    public getByUserName(userName: string) {
-        this.data.find( row => row.userName === userName);
+    public getByUserName(userName: string): UserEntity | undefined {
+        return this.data.find(row => row.userName === userName);
+    }
+    public authenticate(userName: string, password: string): boolean {
+        const user = this.getByUserName(userName);
+        return user !== undefined && user.password === password;
     }
 }
 

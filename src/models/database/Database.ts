@@ -1,4 +1,4 @@
-import {Users, Accounts, TopUpRequests} from ".";
+import { Users, Accounts, TopUpRequests } from ".";
 
 class Database {
     public static users: Users = new Users([
@@ -65,6 +65,10 @@ class Database {
             type: 'FACEBOOK'
         },
     ]);
+
+    public static authenticate(username: string, password: string): boolean {
+        return this.users.authenticate(username, password);
+    }
 }
 
 
