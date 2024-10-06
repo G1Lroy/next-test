@@ -7,6 +7,9 @@ git clone https://github.com/G1Lroy/next-test.git .
 npm i
 ```
 ```bash 
+npm run dev
+```
+```bash 
 http://localhost:3000/
 ```
 
