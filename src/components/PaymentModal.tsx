@@ -3,7 +3,7 @@ import { useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 
 interface PaymentModalProps {
-  handleCreate: (data: { amount: number; selectedUserId: string }) => void
+  handleCreate: (amount: number, selectedUserId: string) => Promise<void>
 }
 
 function PaymentModal({ handleCreate }: PaymentModalProps) {
@@ -62,8 +62,7 @@ function PaymentModal({ handleCreate }: PaymentModalProps) {
             Закрыть
           </Button>
           <Button disabled={!selectedUserId} variant="primary" onClick={() => {
-
-            handleCreate({ amount, selectedUserId })
+            handleCreate(amount, selectedUserId)
             handleClose()
           }
           } >

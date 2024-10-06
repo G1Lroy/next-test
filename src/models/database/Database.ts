@@ -25,14 +25,14 @@ class Database {
     public static topUpRequests: TopUpRequests = new TopUpRequests([
         {
             id: 1,
-            createDate: new Date('2023-01-10T10:00:00Z'),
+            createDate: new Date(Date.now() + 1),
             amount: 50,
             accountId: 101,
             userId: 1,
         },
         {
             id: 2,
-            createDate: new Date('2023-01-11T10:00:00Z'),
+            createDate: new Date(Date.now()),
             amount: 100,
             accountId: 102,
             userId: 2,

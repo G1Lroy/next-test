@@ -6,6 +6,7 @@ import { TopUpEntity } from '@/models/database/TopUpRequests';
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import PaymentModal from './PaymentModal';
 import TableHeaderCell from './TableHeaderCell';
+import { createTopUpRequest, fetchTopUpRequests, removeTopUpRequest } from '@/services';
 
 
 type PaymentsTableProps = {
@@ -17,24 +18,27 @@ function PaymentsTable({ allTopUps, total }: PaymentsTableProps) {
   const [rows, setRows] = useState(allTopUps);
   const [totalAmount, setTotalAmount] = useState(total);
 
-  const handleRemove = (date: string) => {
-    Database.topUpRequests.remove(date);
-    setRows((prev) => prev.filter((i) => i.createDate.toLocaleString() !== date))
-  };
+  const fetchRequests = useCallback(async () => {
+    const data = await fetchTopUpRequests();
+    setRows(data);
+  }, []);
 
-  const handleCreate = useCallback((({ amount, selectedUserId }: any) => {
-    const newItem: TopUpEntity = {
-      accountId: Math.random(),
-      amount: amount,
-      userId: Number(selectedUserId)
-    }
-    Database.topUpRequests.add(newItem, Number(selectedUserId));
-    setRows(() => [...Database.topUpRequests.getAll()])
-  }), [])
+  const handleCreate = useCallback(async (amount: number, selectedUserId: string) => {
+    await createTopUpRequest(amount, selectedUserId);
+    fetchRequests();
+
+  }, [fetchRequests]);
+
+  const handleRemove = useCallback(async (date: Date) => {
+    await removeTopUpRequest(date);
+    await fetchRequests();
+    setRows((prev) => prev.filter((i) => i.createDate !== date));
+  }, [fetchRequests]);
 
   useEffect(() => {
     setTotalAmount(rows.reduce((prev, curr) => prev + (curr.amount ?? 0), 0))
   }, [rows])
+
 
   return (
     <>
@@ -66,7 +70,7 @@ function PaymentsTable({ allTopUps, total }: PaymentsTableProps) {
                 <td>
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() => handleRemove(item.createDate.toLocaleString())}
+                    onClick={() => handleRemove(item.createDate)}
                   >
                     удалить
                   </button>

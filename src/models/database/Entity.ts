@@ -13,25 +13,27 @@ abstract class Entity<T> {
     protected data: BaseEntity<T>[];
 
     public add(row: ModifyBaseEntity<T>, userId: number) {
-        // const lastId = this.data[this.data.length - 1]?.id;
 
         this.data.push({
             id: userId,
-            createDate: new Date(),
+            createDate: new Date(Date.now()),
             ...row
         } as BaseEntity<T>)
-        console.log(this.data)
     }
 
-    public remove(date: string) {
+    public remove(date: Date) {
+        const parsedDate = typeof date === 'string' ? new Date(date) : date;
+        const dateTimestamp = parsedDate.getTime();
 
-        const rowToRemove = this.data.find(row => row.createDate.toLocaleString() === date);
+        const rowToRemove = this.data.find(row => {
+            const rowDateTimestamp = new Date(row.createDate).getTime(); 
+            return rowDateTimestamp === dateTimestamp;
+        });
 
         if (rowToRemove) {
-            this.data = this.data.filter(row => row.createDate.toLocaleString() !== date);
+            this.data = this.data.filter(row => new Date(row.createDate).getTime() !== dateTimestamp); 
         }
-
-        console.log(this.data);
+        
     }
 
     public getAll() { return this.data }

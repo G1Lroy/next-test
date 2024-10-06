@@ -1,9 +1,8 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from "next/navigation";
-import { Database } from '@/models/database';
 
 export type FormDataT = {
   username: string
@@ -17,57 +16,55 @@ interface AuthContextType {
   isLoggedIn: boolean;
   error: string;
 }
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const router = useRouter()
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
 
   const login = async ({ username, password }: FormDataT) => {
     setError("");
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1300));
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-      const isAuthenticated = Database.authenticate(username, password);
-
-      if (!isAuthenticated) {
-        throw new Error("Неправильный логин или пароль");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
       }
-      setIsLoggedIn(true)
-      Cookies.set('userToken', username);
-      return isAuthenticated
+
+
+      const { token } = await response.json();
+      Cookies.set('userToken', token);
+
+      setIsLoggedIn(true);
+      router.push('/payments');
+      return true;
     } catch (err: unknown) {
-      setError(`Ошибка входа, попробуйте снова. ${String(err)}`);
+      const errorMessage = (err instanceof Error) ? err.message : 'Ошибка входа, попробуйте снова.';
+      setError(`Ошибка входа: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
   };
 
   const logout = async () => {
-    setLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setLoading(true);
+    await fetch('/api/logout', { method: 'POST' });
     Cookies.remove('userToken');
     setIsLoggedIn(false);
-    router.replace('/')
-    setLoading(false)
+    router.push('/');
+    setLoading(false);
   };
-
-  useEffect(() => {
-    // Redirect if reload page or manual input adress
-    const token = Cookies.get('userToken')
-    if (token) {
-      setIsLoggedIn(true)
-      router.replace('/payments')
-    } else {
-      setIsLoggedIn(false)
-      router.replace('/')
-    }
-  }, [router])
-
 
 
   return (

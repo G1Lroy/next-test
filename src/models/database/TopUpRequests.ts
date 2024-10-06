@@ -1,4 +1,4 @@
-import Entity, { ModifyBaseEntity } from "./Entity";
+import Entity from "./Entity";
 
 export type TopUpEntity = {
     amount: number,
