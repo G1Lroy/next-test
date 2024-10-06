@@ -37,6 +37,10 @@ function PaymentsTable({ allTopUps, total }: PaymentsTableProps) {
     setTotalAmount(rows.reduce((prev, curr) => prev + (curr.amount ?? 0), 0))
   }, [rows])
 
+  useEffect(()=>{
+    fetchRequests()
+  }, [])
+
 
   return (
     <>
