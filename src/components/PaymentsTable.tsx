@@ -26,14 +26,12 @@ function PaymentsTable({ allTopUps, total }: PaymentsTableProps) {
   const handleCreate = useCallback(async (amount: number, selectedUserId: string) => {
     await createTopUpRequest(amount, selectedUserId);
     fetchRequests();
-
   }, [fetchRequests]);
 
   const handleRemove = useCallback(async (date: Date) => {
     await removeTopUpRequest(date);
-    await fetchRequests();
     setRows((prev) => prev.filter((i) => i.createDate !== date));
-  }, [fetchRequests]);
+  }, []);
 
   useEffect(() => {
     setTotalAmount(rows.reduce((prev, curr) => prev + (curr.amount ?? 0), 0))
@@ -69,6 +67,7 @@ function PaymentsTable({ allTopUps, total }: PaymentsTableProps) {
                 <td>{item.amount}</td>
                 <td>
                   <button
+                    disabled={idx === 0 || idx === 1}
                     className="btn btn-danger btn-sm"
                     onClick={() => handleRemove(item.createDate)}
                   >
