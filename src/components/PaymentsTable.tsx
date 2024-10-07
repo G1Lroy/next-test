@@ -39,7 +39,7 @@ function PaymentsTable({ allTopUps, total }: PaymentsTableProps) {
 
   useEffect(()=>{
     fetchRequests()
-  }, [])
+  }, [fetchRequests])
 
 
   return (
